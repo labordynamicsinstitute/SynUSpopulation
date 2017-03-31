@@ -1,6 +1,6 @@
 #synACS_panda.py
 #William Sexton
-#Last Modified: 3/11/2016
+#Last Modified: 3/30/2016
 
 #imports
 import pandas as pd
@@ -17,12 +17,12 @@ from gen_output import produce_person_output
 
 
 def main():
-    """Builds synthetic population using Bayesian bootstrapping process on ACS housing records and then populating
-    each housing unit/group quarters unit with person records from the ACS person data files"""     
+    """Builds synthetic population using Bayesian bootstrapping process by populating
+    each replicated housing unit/group quarters unit with person records from the ACS person data files"""     
     
     """Configure log"""
     #Change filename with each run (if desired) otherwise info will append to same log.
-    logging.basicConfig(filename='ACS.log',format='%(asctime)s %(message)s', level=logging.INFO)
+    logging.basicConfig(filename='SynPopulation.log',format='%(asctime)s %(message)s', level=logging.INFO)
     logging.info('Started')
     
     
@@ -35,7 +35,8 @@ def main():
     counts=pd.read_csv("rep_counts.csv",index_col=0) #Dataframe with housing serialno's as index an count column indicating
     mydict=pickle.load(open("serial_idx_dict.p","rb"))
     logging.info('before pool')
-    pool=mp.Pool(16)
+    
+    pool=mp.Pool(16) #Modify number of processes here
             
     i=0
     funclist=[]

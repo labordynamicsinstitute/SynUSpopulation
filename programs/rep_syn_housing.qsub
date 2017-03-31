@@ -1,8 +1,9 @@
 #!/bin/bash -l
 #PBS -N gen_syn_housing
 #PBS -l ncpus=4
-#PBS -l mem=65000mb
+#PBS -l mem=128000mb
 #PBS -l walltime=24:00:00
+#PBS -q premium
 #PBS -j oe
 #PBS -m ae
 # The following line should Always be included

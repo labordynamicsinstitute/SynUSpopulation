@@ -1,6 +1,6 @@
 #gen_counts.py
 #William Sexton
-#Last Modified: 3/11/2017
+#Last Modified: 3/30/2017
 
 #imports
 import pandas as pd
@@ -14,30 +14,35 @@ from firstpass import process_housing_chunk
 from firstpass import process_person_chunk
 
 
-def set_alpha(df,gq_serials, count_dict, yearCode, alpha):
-    """alpha is the prior parameter for the dirichlet distribution
-    df is a pandas dataframe containing a chunk of data from the raw ACS housing data
-    gq_serials is a pandas dataframe indexed by group quarter serial numbers with a single person weight column PWGTP
+def set_alpha_h(df, count_dict, yearCode, alpha_h):
+    """df is a pandas dataframe containing a chunk of data from the raw ACS housing data
     count_dict, yearCode,defined elsewhere in code for bookkeeping purposes
-    alpha stores prior probabilities for Dirichlet distribution over records of housing data"""
-    
+    alpha_h stores prior probabilities for Dirichlet distribution over records of housing data"""
+    df=df[df["TYPE"]==1] #Filter out group quarters.
+    if df.empty:
+        return alpha_h #ie do nothing if chunk contains no housing units.
+    df["ADJINC"]=df["ADJINC"].map(yearCode) #convert ADJINC to year.
+    #convert year to count_dict key for housing units
+    df["ADJINC"]=df["ADJINC"].map({2010:"n2010h",2011:"n2011h",2012:"n2012h",2013:"n2013h",2014:"n2014h"})
+    df["ADJINC"]=df["ADJINC"].map(count_dict) #convert year key to count
+        
+    alpha_h.extend((df["WGTP"]*df["ADJINC"]/count_dict["weight_h"]).tolist())
+    return alpha_h
+
+def set_alpha_g(df, count_dict, yearCode, alpha_g):
+    """df is a pandas dataframe containing a chunk of data from the raw ACS person data
+    count_dict, yearCode,defined elsewhere in code for bookkeeping purposes
+    alpha_g stores prior probabilities for Dirichlet distribution over records of group quarters data"""
+    df=df[(df["RELP"]==16) | (df["RELP"]==17)] #Filter to only include group quarters records. See data dictionary for RELP description.
+    if df.empty:
+        return alpha_g #ie do nothing if chunk contains no group quarters records.
     df["ADJINC"]=df["ADJINC"].map(yearCode) #convert ADJINC to year
-    
-    #convert year to count_dict key for housing units/group quarters
-    df.loc[(df["TYPE"]==1),"ADJINC"]=df.loc[(df["TYPE"]==1),"ADJINC"].map({2010:"n2010h",2011:"n2011h",2012:"n2012h",2013:"n2013h",2014:"n2014h"})
-    df.loc[(df["TYPE"]!=1),"ADJINC"]=df.loc[(df["TYPE"]!=1),"ADJINC"].map({2010:"n2010g",2011:"n2011g",2012:"n2012g",2013:"n2013g",2014:"n2014g"})
-    
+    #convert year to count_dict key for group quarters
+    df["ADJINC"]=df["ADJINC"].map({2010:"n2010g",2011:"n2011g",2012:"n2012g",2013:"n2013g",2014:"n2014g"})
     df["ADJINC"]=df["ADJINC"].map(count_dict) #convert year to count
-    
-    df.set_index("serialno")
-    df=df.join(gq_serials) #Add person weight column to dataframe where person weight is NaN for households
-    
-    df=df.fillna(0) #Sets Household person weight to 0.
-    #A household person weight PWGTP is 0 and group quarter weight WGTP is 0 so summing PWGTP and WGTP gives desired weight column.
-    #ADJINC has been converted to include year by housing type count factors
-    #count_dict includes total weight.
-    alpha.extend(((df["WGTP"]+df["PWGTP"])*df["ADJINC"]/count_dict["weight"]).tolist())
-    return alpha
+        
+    alpha_g.extend((df["PWGTP"]*df["ADJINC"]/count_dict["weight_g"]).tolist())
+    return alpha_g
 
 
 
@@ -50,7 +55,7 @@ def main():
     
     """Configure log"""
     #Change filename with each run (if desired) otherwise info will append to same log.
-    logging.basicConfig(filename='ACS.log',format='%(asctime)s %(message)s', level=logging.INFO)
+    logging.basicConfig(filename='gen_counts.log',format='%(asctime)s %(message)s', level=logging.INFO)
     logging.info('Started')
     
     
@@ -68,45 +73,53 @@ def main():
     """Bookkeeping"""
     yearCode={1094136:2010,1071861:2011,1041654:2012,1024037:2013,1008425:2014} #See data dictionary for ADJINC
     
-    count_dict={"total":0, "n2010h":0, "n2011h":0, "n2012h":0, "n2013h":0, "n2014h":0, #n%yr%h is number of observed housing records in yr 
-                "n2010g":0, "n2011g":0, "n2012g":0, "n2013g":0, "n2014g":0,"weight":0} #n%yr%g is number of observed group quarters in yr
+    count_dict={"total_h":0, "n2010h":0, "n2011h":0, "n2012h":0, "n2013h":0, "n2014h":0, "weight_h":0, #n%yr%h is number of observed housing records in yr 
+                "total_g":0, "n2010g":0, "n2011g":0, "n2012g":0, "n2013g":0, "n2014g":0,"weight_g":0} #n%yr%g is number of observed group quarters in yr
     
         
-    """First pass of housing files to collect aggregate counts and store serial numbers"""
-    #Files processed in chunks due to memory limitations.
+    """First pass of housing files to collect aggregate counts and store serial numbers of households"""
+    #Files processed in chunks to reduce memory footprint.
     #This approach requires multiple read ins of the data to complete the Bayesian bootstrapping
     #but it works. If there is a better way of doing this, I'd love to see it.
-    serials=[]
+    serials_h=[]
     for f in filenames_housing:
         for chunk in pd.read_csv(f,usecols=["serialno","ADJINC","TYPE","WGTP"],chunksize=100000): #Restrict to necessary columns
-            count_dict,serials=process_housing_chunk(chunk,count_dict,yearCode,serials)
+            count_dict,serials_h=process_housing_chunk(chunk,count_dict,yearCode,serials_h)
             
-    """First pass at person files to find person weights associated with group quarters records"""
-    #Goal is to produce dataframe with all group quarters serialno as the the index and associated weights in a single column.
-    df_list=[]
+    """First pass at person files to collect aggregate counts and store serial numbers of group quarters records"""
+    serials_g=[]
     for f in filenames_person:
-        for chunk in pd.read_csv(f,usecols=["serialno","PWGTP","RELP"],chunksize=100000): #Restrict to necessary columns
-            df_list.append(process_person_chunk(chunk))
-    gq_serials=pd.concat(df_list)
-    count_dict["weight"] += gq_serials['PWGTP'].sum() #Update total weight to include group quarters weights.
-    
-    """Next pass at housing is to define the prior parameter alpha for the dirichlet distribution."""
-    alpha=[]
+        for chunk in pd.read_csv(f,usecols=["serialno","ADJINC","PWGTP","RELP"],chunksize=100000): #Restrict to necessary columns
+            count_dict,serials_g=process_person_chunk(chunk,count_dict,yearCode,serials_g)
+            
+    """Next pass at housing is to define the prior parameter alpha for the dirichlet distribution over households."""
+    alpha_h=[]
     for f in filenames_housing:
         for chunk in pd.read_csv(f,usecols=["serialno","ADJINC","TYPE","WGTP"],chunksize=100000):
-            alpha=set_alpha(chunk,gq_serials,count_dict,yearCode,alpha)
+            alpha_h=set_alpha_h(chunk,count_dict,yearCode,alpha_h)
+    """Next pass at person is to define the prior parameter alpha for the dirichlet distribution over group quarters."""
+    alpha_g=[]
+    for f in filenames_person:
+        for chunk in pd.read_csv(f,usecols=["serialno","ADJINC","RELP","PWGTP"],chunksize=100000):
+            alpha_g=set_alpha_g(chunk,count_dict,yearCode,alpha_g)
     
-    logging.info(len(alpha)==count_dict['total']) #sanity check
+    logging.debug(len(alpha_g)==count_dict['total_g']) #sanity checks
+    logging.debug(len(alpha_h)==count_dict['total_h'])
     
     
     
-    """Bayesian bootstrap using dirichlet-Multinomial model"""
-    N=132598198+8015581 #target size is number of housing units + group quarters population estimates for 2012.
-    theta=np.random.dirichlet(alpha) #Draw Multinomial probabilities from prior.
-    counts=np.random.multinomial(N,theta) #Draw N sample from Multinomial.
-    logging.info(len(counts)==len(serials))
-    counts=pd.DataFrame({'Count':counts},index=serials) #Dataframe with housing serialno's as index an count column indicating
+    """Bayesian bootstrap simulation of households using dirichlet-Multinomial model"""
+    N_h=132598198 #target size is number of housing units for 2012.
+    theta_h=np.random.dirichlet(alpha_h) #Draw Multinomial probabilities from prior.
+    counts_h=np.random.multinomial(N_h,theta_h) #Draw N sample from Multinomial.
+    counts_h=pd.DataFrame({'Count':counts_h},index=serials_h) #Dataframe with housing serialno's as index of the count column
+    """Bayesian bootstrap simulation of group quarters using dirichlet-Multinomial model"""
+    N_g=8015581 #target size is group quarters population for 2012.
+    theta_g=np.random.dirichlet(alpha_g) #Draw Multinomial probabilities from prior.
+    counts_g=np.random.multinomial(N_g,theta_g) #Draw N sample from Multinomial.
+    counts_g=pd.DataFrame({'Count':counts_g},index=serials_g) #Dataframe with group quarters serialno's as index of the count column
     
+    counts=pd.concat([counts_h,counts_g])
     counts.to_csv("rep_counts.csv")
           
     

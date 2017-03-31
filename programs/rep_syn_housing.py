@@ -1,6 +1,6 @@
 #syn_housing.py
 #William Sexton
-#3/11/2017
+#3/30/2017
 
 #imports
 import pandas as pd
@@ -16,8 +16,7 @@ from gen_output import produce_housing_output
 
 
 def main():
-    """Builds synthetic population using Bayesian bootstrapping process on ACS housing records and then populating
-    each housing unit/group quarters unit with person records from the ACS person data files"""     
+    """Builds synthetic housing population using Bayesian bootstrapping process on ACS housing records"""     
     
     """Configure log"""
     #Change filename with each run (if desired) otherwise info will append to same log.
@@ -42,7 +41,7 @@ def main():
             idx_base, subdict=produce_housing_output(chunk,counts,idx_base,ofile)
             mydict.append(subdict)
             
-    mydict={k:v for d in mydict for k,v in d.items()} #not a syntax error in python 2.7
+    mydict={k:v for d in mydict for k,v in d.items()}
     pickle.dump(mydict,open("serial_idx_dict.p","wb"))  
     logging.info('Finished')
     return

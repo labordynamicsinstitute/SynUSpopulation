@@ -1,8 +1,8 @@
 #!/bin/bash -l
-#PBS -N gen_rep_counts
+#PBS -N person_recode
 #PBS -l ncpus=4
-#PBS -l mem=128000mb
-#PBS -l walltime=24:00:00
+#PBS -l mem=500000mb
+#PBS -l walltime=96:00:00
 #PBS -q premium
 #PBS -j oe
 #PBS -m ae
@@ -10,6 +10,6 @@
 source /etc/profile.d/modules.sh
 module load python/anaconda/2.7
 cd $PBS_O_WORKDIR
-python gen_counts.py person_data housing_data
+python recode.py person_rep
 wait
 echo done
