@@ -1,0 +1,15 @@
+#!/bin/bash -l
+#PBS -N gen_small
+#PBS -l ncpus=2
+#PBS -l mem=750000mb
+#PBS -l walltime=96:00:00
+#PBS -j oe
+#PBS -q premium
+#PBS -m ae
+# The following line should Always be included
+source /etc/profile.d/modules.sh
+module load python/anaconda/2.7
+cd $PBS_O_WORKDIR
+python rep_syn_person.py person_data
+wait
+echo done

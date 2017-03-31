@@ -1,0 +1,14 @@
+#!/bin/bash -l
+#PBS -N gen_rep_counts
+#PBS -l ncpus=4
+#PBS -l mem=65000mb
+#PBS -l walltime=24:00:00
+#PBS -j oe
+#PBS -m ae
+# The following line should Always be included
+source /etc/profile.d/modules.sh
+module load python/anaconda/2.7
+cd $PBS_O_WORKDIR
+python gen_counts.py person_data housing_data
+wait
+echo done

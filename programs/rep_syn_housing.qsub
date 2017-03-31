@@ -1,0 +1,14 @@
+#!/bin/bash -l
+#PBS -N gen_syn_housing
+#PBS -l ncpus=4
+#PBS -l mem=65000mb
+#PBS -l walltime=24:00:00
+#PBS -j oe
+#PBS -m ae
+# The following line should Always be included
+source /etc/profile.d/modules.sh
+module load python/anaconda/2.7
+cd $PBS_O_WORKDIR
+python rep_syn_housing.py housing_data
+wait
+echo done
