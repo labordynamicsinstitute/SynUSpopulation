@@ -15,6 +15,9 @@ The synthetic population was generated from the 2010-2014 ACS PUMS housing and p
 
 Persistent URL:  http://doi.org/10.3886/E100486V1
 
+## Funding support
+This work is supported under  Grant G-2015-13903 from the Alfred P. Sloan Foundation on "[The Economics of Socially-Efficient Privacy and Confidentiality Management for Statistical Agencies](https://www.ilr.cornell.edu/labor-dynamics-institute/research/project-19)" (PI: John M. Abowd)
+
 ## Testing
 Stress testing to determine whether these data can actually reproduce accurate statistics for 2012 is still underway.
 
