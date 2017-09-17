@@ -1,19 +1,20 @@
 # Synthetic population housing and person records for the United States
 - Author: William Sexton
-- Last Modified: 3/23/17
+- Author: Daniel Lin
+- Last Modified: 9/17/2017	(Daniel Lin)
 
 These data are meant to be representative of the 2012 US population.
 
 ## Inputs
-The synthetic population was generated from the 2010-2014 ACS PUMS housing and person files.
+The synthetic population was generated from the 2011-2015 ACS PUMS housing and person files.
 
 
-    United States Department of Commerce. Bureau of the Census. (2017-03-06).
-    American Community Survey 2010-2014 ACS 5-Year PUMS File [Data set].
+    United States Department of Commerce. Bureau of the Census. (2017-09-17).
+    American Community Survey 2011-2015 ACS 5-Year PUMS File [Data set].
     Ann Arbor, MI: Inter-university Consortium of Political and Social
-    Research [distributor]. http://doi.org/10.3886/E100486V1
+    Research [distributor]. http://doi.org/10.3886/E100521V1
 
-Persistent URL:  http://doi.org/10.3886/E100486V1
+Persistent URL:  http://doi.org/10.3886/E100521V1
 
 ## Funding support
 This work is supported under  Grant G-2015-13903 from the Alfred P. Sloan Foundation on "[The Economics of Socially-Efficient Privacy and Confidentiality Management for Statistical Agencies](https://www.ilr.cornell.edu/labor-dynamics-institute/research/project-19)" (PI: John M. Abowd)
