@@ -33,7 +33,7 @@ Files are split to be roughly equal in size. The files contain data for the enti
 If desired, person and housing records should be merged on 'id'. Variable description is below.
 
 ## Data Dictionary
-See [2010-2014 ACS PUMS data dictionary](http://doi.org/10.3886/E100486V1). All variables from the ACS PUMS housing files are present in the synthetic housing files and all variables from the ACS PUMS person files are present in the synthetic person files. Variables have not been modified in any way. Theoretically, variables like `person weight` no longer have any use in the synthetic population.
+See [2011-2015 ACS PUMS data dictionary](http://doi.org/10.3886/E100521V1). All variables from the ACS PUMS housing files are present in the synthetic housing files and all variables from the ACS PUMS person files are present in the synthetic person files. Variables have not been modified in any way. Theoretically, variables like `person weight` no longer have any use in the synthetic population.
 
 ### Additional variables.
 - `id`: Both the synthetic housing and person files include this variable. It is meant as an extension/recode of the existing `serialno` variable.  Each housing/group quarters unit in the synthetic population gets a unique `id` and each person in the synthetic population gets linked to exactly one housing/group quarter unit by `id`.
