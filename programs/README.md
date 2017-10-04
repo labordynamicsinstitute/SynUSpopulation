@@ -1,6 +1,7 @@
 # Creating a synthetic population for a whole country
 - Author: William Sexton
-- Last Modified: 3/31/17
+- Daniel Lin
+- Last Modified: 10/02/2017 by Daniel
 
 This directory contains the most recent version of the code used to create SynPopulation. We modified the bootstrap process to account for flaws in the previous versions. This code maintains the runtime improves of [ACS_multiprocessing](/labordynamicsinstitute/SynUSpopulation/tree/ACS_multiprocess).
 

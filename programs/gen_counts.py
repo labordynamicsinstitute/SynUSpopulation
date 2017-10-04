@@ -1,6 +1,7 @@
 #gen_counts.py
 #William Sexton
-#Last Modified: 3/30/2017
+#Daniel Lin
+#Last Modified: 10/02/2017 by Daniel
 
 #imports
 import pandas as pd
@@ -23,7 +24,7 @@ def set_alpha_h(df, count_dict, yearCode, alpha_h):
         return alpha_h #ie do nothing if chunk contains no housing units.
     df["ADJINC"]=df["ADJINC"].map(yearCode) #convert ADJINC to year.
     #convert year to count_dict key for housing units
-    df["ADJINC"]=df["ADJINC"].map({2010:"n2010h",2011:"n2011h",2012:"n2012h",2013:"n2013h",2014:"n2014h"})
+    df["ADJINC"]=df["ADJINC"].map({2011:"n2011h",2012:"n2012h",2013:"n2013h",2014:"n2014h",2015:"n2015h"})
     df["ADJINC"]=df["ADJINC"].map(count_dict) #convert year key to count
         
     alpha_h.extend((df["WGTP"]*df["ADJINC"]/count_dict["weight_h"]).tolist())
@@ -38,7 +39,7 @@ def set_alpha_g(df, count_dict, yearCode, alpha_g):
         return alpha_g #ie do nothing if chunk contains no group quarters records.
     df["ADJINC"]=df["ADJINC"].map(yearCode) #convert ADJINC to year
     #convert year to count_dict key for group quarters
-    df["ADJINC"]=df["ADJINC"].map({2010:"n2010g",2011:"n2011g",2012:"n2012g",2013:"n2013g",2014:"n2014g"})
+    df["ADJINC"]=df["ADJINC"].map({2011:"n2011g",2012:"n2012g",2013:"n2013g",2014:"n2014g",2015:"n2015g"})
     df["ADJINC"]=df["ADJINC"].map(count_dict) #convert year to count
         
     alpha_g.extend((df["PWGTP"]*df["ADJINC"]/count_dict["weight_g"]).tolist())
@@ -71,10 +72,10 @@ def main():
     
     
     """Bookkeeping"""
-    yearCode={1094136:2010,1071861:2011,1041654:2012,1024037:2013,1008425:2014} #See data dictionary for ADJINC
+    yearCode={1073094:2011,1042852:2012,1025215:2013,1009585:2014,1001264:2015} #See data dictionary for ADJINC
     
-    count_dict={"total_h":0, "n2010h":0, "n2011h":0, "n2012h":0, "n2013h":0, "n2014h":0, "weight_h":0, #n%yr%h is number of observed housing records in yr 
-                "total_g":0, "n2010g":0, "n2011g":0, "n2012g":0, "n2013g":0, "n2014g":0,"weight_g":0} #n%yr%g is number of observed group quarters in yr
+    count_dict={"total_h":0, "n2011h":0, "n2012h":0, "n2013h":0, "n2014h":0, "n2015h":0, "weight_h":0, #n%yr%h is number of observed housing records in yr 
+                "total_g":0, "n2011g":0, "n2012g":0, "n2013g":0, "n2014g":0, "n2015g":0,"weight_g":0} #n%yr%g is number of observed group quarters in yr
     
         
     """First pass of housing files to collect aggregate counts and store serial numbers of households"""
