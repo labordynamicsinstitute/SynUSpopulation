@@ -1,6 +1,7 @@
 #firstpass.py
 #William Sexton
-#Last Modified: 3/30/2017
+#Daniel Lin
+#Last Modified: 10/02/2017
 import pandas as pd
 import numpy as np
 
@@ -25,11 +26,11 @@ def process_person_chunk(df,count_dict,yearCode,serials_g):
     
     cnt_g=df.groupby("ADJINC").size() #returns pandas series
     #Increase counts by observed number in current chunk, .get(yr,0) returns 0 if no record was observed in yr.
-    count_dict["n2010g"] += cnt_g.get(2010,0)
     count_dict["n2011g"] += cnt_g.get(2011,0)
     count_dict["n2012g"] += cnt_g.get(2012,0)
     count_dict["n2013g"] += cnt_g.get(2013,0)
     count_dict["n2014g"] += cnt_g.get(2014,0)
+    count_dict["n2015g"] += cnt_g.get(2015,0)
     
     
     return count_dict, serials_g #returns dataframe with serialno set as index and single column containing PWGTP
@@ -41,7 +42,7 @@ def process_housing_chunk(df,count_dict,yearCode,serials_h):
     count_dict is a dictionary with values representing observed counts for each key.
     yearCode is dictionary used to map 'ADJINC' variable to year following ACS data dictionary specification
     serials_h is a list for storing all processed serials from household records"""
-    #count_dict keys ={total, n2010h, n2011h, n2012h, n2013h, n2014h, n2010g, n2011g, n2012g, n2013g, n2014g,weight}
+    #count_dict keys ={total, n2011h, n2012h, n2013h, n2014h, n2015h, n2011g, n2012g, n2013g, n2014g, n2015g,weight}
     
     
     df=df[df["TYPE"]==1] #TYPE 1 is housing unit
@@ -59,10 +60,10 @@ def process_housing_chunk(df,count_dict,yearCode,serials_h):
     
     cnt_h=df.groupby("ADJINC").size() #returns pandas series
     #Increase counts by observed number in current chunk, .get(yr,0) returns 0 if no record was observed in yr.
-    count_dict["n2010h"] += cnt_h.get(2010,0)
     count_dict["n2011h"] += cnt_h.get(2011,0)
     count_dict["n2012h"] += cnt_h.get(2012,0)
     count_dict["n2013h"] += cnt_h.get(2013,0)
     count_dict["n2014h"] += cnt_h.get(2014,0)
+    count_dict["n2015h"] += cnt_h.get(2015,0)
           
     return count_dict, serials_h
