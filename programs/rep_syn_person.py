@@ -1,6 +1,7 @@
 #synACS_panda.py
 #William Sexton
-#Last Modified: 3/30/2016
+#Daniel Lin
+#Last Modified: 10/02/16 by Daniel
 
 #imports
 import pandas as pd

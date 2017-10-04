@@ -1,6 +1,7 @@
 #gen_output.py
 #William Sexton
-#Last Modified: 3/30/16
+#Daniel Lin
+#Last Modified: 10/02/17 by Daniel
 import pandas as pd
 import numpy as np
 import csv

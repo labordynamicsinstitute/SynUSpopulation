@@ -1,6 +1,7 @@
 #synACS_panda.py
 #William Sexton
-#3/8/2016
+#Daniel Lin
+#Last Modified: 10/02/16 by Daniel
 
 #imports
 import pandas as pd
@@ -26,8 +27,8 @@ def set_alpha(df,gq_serials, count_dict, yearCode, alpha):
     df["ADJINC"]=df["ADJINC"].map(yearCode) #convert ADJINC to year
     
     #convert year to count_dict key for housing units/group quarters
-    df.loc[(df["TYPE"]==1),"ADJINC"]=df.loc[(df["TYPE"]==1),"ADJINC"].map({2010:"n2010h",2011:"n2011h",2012:"n2012h",2013:"n2013h",2014:"n2014h"})
-    df.loc[(df["TYPE"]!=1),"ADJINC"]=df.loc[(df["TYPE"]!=1),"ADJINC"].map({2010:"n2010g",2011:"n2011g",2012:"n2012g",2013:"n2013g",2014:"n2014g"})
+    df.loc[(df["TYPE"]==1),"ADJINC"]=df.loc[(df["TYPE"]==1),"ADJINC"].map({2011:"n2011h",2012:"n2012h",2013:"n2013h",2014:"n2014h",2015:"n2015h"})
+    df.loc[(df["TYPE"]!=1),"ADJINC"]=df.loc[(df["TYPE"]!=1),"ADJINC"].map({2011:"n2011g",2012:"n2012g",2013:"n2013g",2014:"n2014g",2015:"n2015g"})
     
     df["ADJINC"]=df["ADJINC"].map(count_dict) #convert year to count
     
@@ -68,10 +69,10 @@ def main():
     
     
     """Bookkeeping"""
-    yearCode={1094136:2010,1071861:2011,1041654:2012,1024037:2013,1008425:2014} #See data dictionary for ADJINC
+    yearCode={1073094:2011,1042852:2012,1025215:2013,1009585:2014,1001264:2015} #See data dictionary for ADJINC
     
-    count_dict={"total":0, "n2010h":0, "n2011h":0, "n2012h":0, "n2013h":0, "n2014h":0, #n%yr%h is number of observed housing records in yr 
-                "n2010g":0, "n2011g":0, "n2012g":0, "n2013g":0, "n2014g":0,"weight":0} #n%yr%g is number of observed group quarters in yr
+    count_dict={"total":0, "n2011h":0, "n2012h":0, "n2013h":0, "n2014h":0, "n2015h":0, #n%yr%h is number of observed housing records in yr 
+                "n2011g":0, "n2012g":0, "n2013g":0, "n2014g":0, "n2015g":0,"weight":0} #n%yr%g is number of observed group quarters in yr
     
         
     """First pass of housing files to collect aggregate counts and store serial numbers"""

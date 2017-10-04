@@ -1,6 +1,7 @@
 #syn_housing.py
 #William Sexton
-#3/30/2017
+#Daniel Lin
+#Last Modified: 10/02/17 by Daniel
 
 #imports
 import pandas as pd

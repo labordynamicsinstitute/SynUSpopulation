@@ -1,6 +1,7 @@
 #recode.py
 #William Sexton
-#3/30/17
+#Daniel Lin
+#Last Modified: 10/02/16 by Daniel
 
 #imports
 import pandas as pd
