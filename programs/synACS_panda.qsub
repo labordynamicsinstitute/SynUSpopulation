@@ -1,0 +1,15 @@
+#!/bin/bash -l
+#PBS -N synACS_panda
+#PBS -l ncpus=4
+#PBS -l mem=500000mb
+#PBS -l walltime=96:00:00
+#PBS -q premium
+#PBS -j oe
+#PBS -m ae
+# The following line should Always be included
+source /etc/profile.d/modules.sh
+module load python/anaconda/2.7
+cd $PBS_O_WORKDIR
+python synACS_panda.py ../inputs/ ../inputs/
+wait
+echo done
