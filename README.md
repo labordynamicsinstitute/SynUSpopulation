@@ -3,6 +3,23 @@
 - Author: Daniel Lin
 - Last Modified: 9/17/2017	(Daniel Lin)
 
+The programs for this project are ran under the following directory structure:
+|-Project
+	|-docs
+	|-inputs
+		|-housing_data
+		|-person_data
+	|-outputs
+		|-housing_rep
+		|-person_recode
+		|-person_rep
+	|-programs
+	|-tests
+	|-README.md
+
+
+	
+
 These data are meant to be representative of the 2012 US population.
 
 ## Inputs

@@ -3,6 +3,20 @@
 - Daniel Lin
 - Last Modified: 10/02/2017 by Daniel
 
+The programs for this project are ran under the following directory structure:
+|-Project
+	|-docs
+	|-inputs
+		|-housing_data
+		|-person_data
+	|-outputs
+		|-housing_rep
+		|-person_recode
+		|-person_rep
+	|-programs
+	|-tests
+	|-README.md
+
 This directory contains the most recent version of the code used to create SynPopulation. We modified the bootstrap process to account for flaws in the previous versions. This code maintains the runtime improves of [ACS_multiprocessing](/labordynamicsinstitute/SynUSpopulation/tree/ACS_multiprocess).
 
 ## Inputs
