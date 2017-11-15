@@ -10,6 +10,6 @@
 source /etc/profile.d/modules.sh
 module load python/anaconda/2.7
 cd $PBS_O_WORKDIR
-python synACS_panda.py ../inputs/ ../inputs/
+python synACS_panda.py ../inputs/person_data ../inputs/housing_data
 wait
 echo done

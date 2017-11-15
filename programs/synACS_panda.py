@@ -17,6 +17,7 @@ from firstpass import process_housing_chunk
 from firstpass import process_person_chunk
 
 
+
 def set_alpha(df,gq_serials, count_dict, yearCode, alpha):
     """alpha is the prior parameter for the dirichlet distribution
     df is a pandas dataframe containing a chunk of data from the raw ACS housing data
@@ -24,17 +25,19 @@ def set_alpha(df,gq_serials, count_dict, yearCode, alpha):
     count_dict, yearCode,defined elsewhere in code for bookkeeping purposes
     alpha stores prior probabilities for Dirichlet distribution over records of housing data"""
     
+    print "set_alpha step 1"
     df["ADJINC"]=df["ADJINC"].map(yearCode) #convert ADJINC to year
-    
+    	
+    print "set_alpha step 2"
     #convert year to count_dict key for housing units/group quarters
     df.loc[(df["TYPE"]==1),"ADJINC"]=df.loc[(df["TYPE"]==1),"ADJINC"].map({2011:"n2011h",2012:"n2012h",2013:"n2013h",2014:"n2014h",2015:"n2015h"})
     df.loc[(df["TYPE"]!=1),"ADJINC"]=df.loc[(df["TYPE"]!=1),"ADJINC"].map({2011:"n2011g",2012:"n2012g",2013:"n2013g",2014:"n2014g",2015:"n2015g"})
     
     df["ADJINC"]=df["ADJINC"].map(count_dict) #convert year to count
-    
+    print "set_alpha step 3"
     df.set_index("serialno")
     df=df.join(gq_serials) #Add person weight column to dataframe where person weight is NaN for households
-    
+    print "set_alpha step 4"
     df=df.fillna(0) #Sets Household person weight to 0.
     #A household person weight PWGTP is 0 and group quarter weight WGTP is 0 so summing PWGTP and WGTP gives desired weight column.
     #ADJINC has been converted to include year by housing type count factors
@@ -51,12 +54,14 @@ def main():
     """Builds synthetic population using Bayesian bootstrapping process on ACS housing records and then populating
     each housing unit/group quarters unit with person records from the ACS person data files"""     
     
+
+
     """Configure log"""
     #Change filename with each run (if desired) otherwise info will append to same log.
     logging.basicConfig(filename='ACS.log',format='%(asctime)s %(message)s', level=logging.INFO)
     logging.info('Started')
     
-    
+    print "synACS_panda step 1"    
     """Set file paths"""
     person_raw=sys.argv[1] #This should be path to raw ACS person files
     filenames_person=glob.glob(os.path.join(person_raw,"*.csv")) #list of four person files
@@ -67,14 +72,15 @@ def main():
     logging.debug(filenames_housing)
     
     
-    
+    print "synACS_panda step 2"    
     """Bookkeeping"""
     yearCode={1073094:2011,1042852:2012,1025215:2013,1009585:2014,1001264:2015} #See data dictionary for ADJINC
     
-    count_dict={"total":0, "n2011h":0, "n2012h":0, "n2013h":0, "n2014h":0, "n2015h":0, #n%yr%h is number of observed housing records in yr 
-                "n2011g":0, "n2012g":0, "n2013g":0, "n2014g":0, "n2015g":0,"weight":0} #n%yr%g is number of observed group quarters in yr
+    count_dict={"total":0, "n2011h":0, "n2012h":0, "n2013h":0, "n2014h":0, "n2015h":0, 
+                "n2011g":0, "n2012g":0, "n2013g":0, "n2014g":0, "n2015g":0,"weight":0} #n%yr%h is number of observed housing records in yr 
+#n%yr%g is number of observed group quarters in yr
     
-        
+    print "synACS_panda step 3"       
     """First pass of housing files to collect aggregate counts and store serial numbers"""
     #Files processed in chunks due to memory limitations.
     #This approach requires multiple read ins of the data to complete the Bayesian bootstrapping
@@ -83,7 +89,8 @@ def main():
     for f in filenames_housing:
         for chunk in pd.read_csv(f,usecols=["serialno","ADJINC","TYPE","WGTP"],chunksize=100000): #Restrict to necessary columns
             count_dict,serials=process_housing_chunk(chunk,count_dict,yearCode,serials)
-            
+
+    print "synACS_panda step 4"            
     """First pass at person files to find person weights associated with group quarters records"""
     #Goal is to produce dataframe with all group quarters serialno as the the index and associated weights in a single column.
     df_list=[]
@@ -92,7 +99,8 @@ def main():
             df_list.append(process_person_chunk(chunk))
     gq_serials=pd.concat(df_list)
     count_dict["weight"] += gq_serials['PWGTP'].sum() #Update total weight to include group quarters weights.
-    
+ 
+    print "synACS_panda step 5"    
     """Next pass at housing is to define the prior parameter alpha for the dirichlet distribution."""
     alpha=[]
     for f in filenames_housing:
@@ -102,7 +110,7 @@ def main():
     logging.info(len(alpha)==count_dict['total']) #sanity check
     
     
-    
+    print "synACS_panda step 6"      
     """Bayesian bootstrap using dirichlet-Multinomial model"""
     N=132598198+8015581 #target size is number of housing units + group quarters population estimates for 2012.
     theta=np.random.dirichlet(alpha) #Draw Multinomial probabilities from prior.
@@ -116,7 +124,7 @@ def main():
     i=0
     for f in filenames_housing:
         for chunk in pd.read_csv(f,dtype=str,chunksize=100000):
-            ofile='housing_rep/repHus%s.csv' %i
+            ofile='../outputs/housing_rep/repHus%s.csv' %i
             i+=1
             idx_base, subdict=produce_housing_output(chunk,counts,idx_base,ofile)
             mydict.append(subdict)
@@ -125,7 +133,7 @@ def main():
     i=0
     for f in filenames_person:
         for chunk in pd.read_csv(f,dtype=str,chunksize=100000):
-            ofile='person_rep/repPus%s.csv' %i
+            ofile='../outputs/person_rep/repPus%s.csv' %i
             i+=1
             produce_person_output(chunk,counts,mydict,ofile)
     
