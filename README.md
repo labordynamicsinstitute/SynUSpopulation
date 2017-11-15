@@ -4,18 +4,19 @@
 - Last Modified: 9/17/2017	(Daniel Lin)
 
 The programs for this project are ran under the following directory structure:
-|-Project
-	|-docs
-	|-inputs
-		|-housing_data
-		|-person_data
-	|-outputs
-		|-housing_rep
-		|-person_recode
-		|-person_rep
-	|-programs
-	|-tests
-	|-README.md
+
+ |-Project
+   |-docs
+   |-inputs
+     |-housing_data
+     |-person_data
+   |-outputs
+     |-housing_rep
+     |-person_recode
+     |-person_rep
+   |-programs
+   |-tests
+   |-README.md
 
 
 	
