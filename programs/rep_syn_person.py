@@ -42,7 +42,7 @@ def main():
     funclist=[]
     for f in filenames_person:
         for chunk in pd.read_csv(f,dtype=str,chunksize=10000):
-            ofile='person_rep/repPus%s.csv' %i
+            ofile='../outputs/person_rep/repPus%s.csv' %i
             i+=1
             logging.info('new job')
             res = pool.apply_async(produce_person_output,[chunk,counts,mydict,ofile])

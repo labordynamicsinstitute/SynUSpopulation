@@ -36,7 +36,7 @@ def main():
     i=0
     for f in filenames_housing:
         for chunk in pd.read_csv(f,dtype=str,chunksize=500000):
-            ofile='housing_rep/repHus%s.csv' %i
+            ofile='../output/housing_rep/repHus%s.csv' %i
             i+=1
             idx_base, subdict=produce_housing_output(chunk,counts,idx_base,ofile)
             mydict.append(subdict)
