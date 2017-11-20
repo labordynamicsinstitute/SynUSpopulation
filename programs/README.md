@@ -5,17 +5,18 @@
 This directory contains the most recent version of the code used to create SynPopulation. We modified the bootstrap process to account for flaws in the previous versions. This code maintains the runtime improves of [ACS_multiprocessing](/labordynamicsinstitute/SynUSpopulation/tree/ACS_multiprocess).
 
 ## Inputs
-Assumes you have folders containing the raw ACS person and raw ACS housing data within the directory containing python code.
+Assumes raw ACS person and raw ACS housing data are within the appropriate directories in SynUSpopulation/inputs/
 
 ## Outputs
 
-Also you must create the follow empty folder: housing_rep, person_rep, person_recode.
+The output will be generated in the provided directories of SynUSpopulation/outputs/
 
 ## To run
-`python gen_counts.py [folder for raw ACS person data] [folder for raw ACS housing data]`
+Assumes file structure of git repo. Code requires the current directory when run to be the programs directory.  
+`python gen_counts.py`
 
-`python rep_syn_housing.py [folder for raw ACS housing data]`
+`python rep_syn_housing.py`
 
-`python rep_syn_person.py [folder for raw ACS person data]`
+`python rep_syn_person.py`
 
-`python recode.py [folder containing output from rep_syn_person]`
+`python recode.py`
