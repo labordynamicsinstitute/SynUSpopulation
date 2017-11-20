@@ -1,7 +1,7 @@
 #gen_counts.py
 #William Sexton
 #Daniel Lin
-#Last Modified: 10/02/2017 by Daniel
+#Last Modified: 11/20/2017 by Daniel
 
 #imports
 import pandas as pd
@@ -13,7 +13,6 @@ import os.path
 import logging
 from firstpass import process_housing_chunk
 from firstpass import process_person_chunk
-
 
 def set_alpha_h(df, count_dict, yearCode, alpha_h):
     """df is a pandas dataframe containing a chunk of data from the raw ACS housing data
@@ -47,9 +46,6 @@ def set_alpha_g(df, count_dict, yearCode, alpha_g):
 
 
 
-
-
-
 def main():
     """Builds synthetic population using Bayesian bootstrapping process on ACS housing records and then populating
     each housing unit/group quarters unit with person records from the ACS person data files"""     
@@ -61,11 +57,11 @@ def main():
     
     
     """Set file paths"""
-    person_raw=sys.argv[1] #This should be path to raw ACS person files
+    person_raw="../inputs/person_data/" #This should be path to raw ACS person files
     filenames_person=glob.glob(os.path.join(person_raw,"*.csv")) #list of four person files
     logging.debug(filenames_person)
     
-    housing_raw=sys.argv[2] #This should be path to raw ACS housing files
+    housing_raw="../inputs/housing_data/" #This should be path to raw ACS housing files
     filenames_housing=glob.glob(os.path.join(housing_raw,"*.csv")) #list of four housing files
     logging.debug(filenames_housing)
     
@@ -107,21 +103,22 @@ def main():
     logging.debug(len(alpha_g)==count_dict['total_g']) #sanity checks
     logging.debug(len(alpha_h)==count_dict['total_h'])
     
+    logging.info(count_dict)
     
     
     """Bayesian bootstrap simulation of households using dirichlet-Multinomial model"""
-    N_h=132598198 #target size is number of housing units for 2012.
+    N_h=133351840 #target size is number of housing units for 2012. #hard coded from count_dict['weight_h']
     theta_h=np.random.dirichlet(alpha_h) #Draw Multinomial probabilities from prior.
     counts_h=np.random.multinomial(N_h,theta_h) #Draw N sample from Multinomial.
     counts_h=pd.DataFrame({'Count':counts_h},index=serials_h) #Dataframe with housing serialno's as index of the count column
     """Bayesian bootstrap simulation of group quarters using dirichlet-Multinomial model"""
-    N_g=8015581 #target size is group quarters population for 2012.
+    N_g=8055624 #target size is group quarters population for 2012. #hard coded from count_dict['weight_g']
     theta_g=np.random.dirichlet(alpha_g) #Draw Multinomial probabilities from prior.
     counts_g=np.random.multinomial(N_g,theta_g) #Draw N sample from Multinomial.
     counts_g=pd.DataFrame({'Count':counts_g},index=serials_g) #Dataframe with group quarters serialno's as index of the count column
     
     counts=pd.concat([counts_h,counts_g])
-    counts.to_csv("rep_counts.csv")
+    counts.to_csv("../outputs/rep_counts.csv")
           
     
     logging.info('Finished')
@@ -131,4 +128,3 @@ def main():
 if __name__ == '__main__':
     np.random.seed(1138) #To facilitate replication.
     main()
-    

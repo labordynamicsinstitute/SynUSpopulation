@@ -10,6 +10,6 @@
 source /etc/profile.d/modules.sh
 module load python/anaconda/2.7
 cd $PBS_O_WORKDIR
-python gen_counts.py person_data housing_data
+python gen_counts.py
 wait
 echo done
