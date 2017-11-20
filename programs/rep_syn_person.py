@@ -27,7 +27,7 @@ def main():
     
     
     """Set file paths"""
-    person_raw=sys.argv[1] #This should be path to raw ACS person files
+    person_raw="../inputs/person_data/" #This should be path to raw ACS person files
     filenames_person=glob.glob(os.path.join(person_raw,"*.csv")) #list of four person files
     logging.debug(filenames_person)
     

@@ -130,7 +130,7 @@ def main():
     logging.info('Started')
     
     """Set file paths"""
-    person_rep=sys.argv[1] #This should be path to replicated ACS person files
+    person_rep="../outputs/person_rep/" #This should be path to replicated ACS person files
     filenames_person=glob.glob(os.path.join(person_rep,"*.csv")) #list of all 1556 person_rep files
     
     segmented_filelist=[filenames_person[i:i+50] for i in range(0, len(filenames_person), 50)] #splits into list of lists of 50 files.

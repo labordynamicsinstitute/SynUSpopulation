@@ -60,11 +60,11 @@ def main():
     
     
     """Set file paths"""
-    person_raw=sys.argv[1] #This should be path to raw ACS person files
+    person_raw="../inputs/person_data/" #This should be path to raw ACS person files
     filenames_person=glob.glob(os.path.join(person_raw,"*.csv")) #list of four person files
     logging.debug(filenames_person)
     
-    housing_raw=sys.argv[2] #This should be path to raw ACS housing files
+    housing_raw="../inputs/housing_data/" #This should be path to raw ACS housing files
     filenames_housing=glob.glob(os.path.join(housing_raw,"*.csv")) #list of four housing files
     logging.debug(filenames_housing)
     
