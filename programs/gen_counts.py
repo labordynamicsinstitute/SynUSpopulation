@@ -107,12 +107,12 @@ def main():
     
     
     """Bayesian bootstrap simulation of households using dirichlet-Multinomial model"""
-    N_h=133351840 #target size is number of housing units for 2012. #hard coded from count_dict['weight_h']
+    N_h=133209108 #target size is number of housing units for 2013. #hard coded from https://factfinder.census.gov/bkmk/table/1.0/en/PEP/2016/PEPANNHU 2013 US housing unit estimate
     theta_h=np.random.dirichlet(alpha_h) #Draw Multinomial probabilities from prior.
     counts_h=np.random.multinomial(N_h,theta_h) #Draw N sample from Multinomial.
     counts_h=pd.DataFrame({'Count':counts_h},index=serials_h) #Dataframe with housing serialno's as index of the count column
     """Bayesian bootstrap simulation of group quarters using dirichlet-Multinomial model"""
-    N_g=8055624 #target size is group quarters population for 2012. #hard coded from count_dict['weight_g']
+    N_g=8027041 #target size is group quarters population for 2013. #hard coded from https://factfinder.census.gov/bkmk/table/1.0/en/ACS/13_5YR/S2601B 2013 total group quarter pop est
     theta_g=np.random.dirichlet(alpha_g) #Draw Multinomial probabilities from prior.
     counts_g=np.random.multinomial(N_g,theta_g) #Draw N sample from Multinomial.
     counts_g=pd.DataFrame({'Count':counts_g},index=serials_g) #Dataframe with group quarters serialno's as index of the count column
