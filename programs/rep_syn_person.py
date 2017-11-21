@@ -1,7 +1,7 @@
 #synACS_panda.py
 #William Sexton
 #Daniel Lin
-#Last Modified: 10/02/16 by Daniel
+#Last Modified: 11/20/17 by Daniel
 
 #imports
 import pandas as pd
@@ -28,13 +28,13 @@ def main():
     
     
     """Set file paths"""
-    person_raw=sys.argv[1] #This should be path to raw ACS person files
+    person_raw="../inputs/person_data/" #This should be path to raw ACS person files
     filenames_person=glob.glob(os.path.join(person_raw,"*.csv")) #list of four person files
     logging.debug(filenames_person)
     
                 
-    counts=pd.read_csv("rep_counts.csv",index_col=0) #Dataframe with housing serialno's as index an count column indicating
-    mydict=pickle.load(open("serial_idx_dict.p","rb"))
+    counts=pd.read_csv("../outputs/rep_counts.csv",index_col=0) #Dataframe with housing serialno's as index an count column indicating
+    mydict=pickle.load(open("../outputs/serial_idx_dict.p","rb"))
     logging.info('before pool')
     
     pool=mp.Pool(16) #Modify number of processes here
@@ -43,7 +43,7 @@ def main():
     funclist=[]
     for f in filenames_person:
         for chunk in pd.read_csv(f,dtype=str,chunksize=10000):
-            ofile='person_rep/repPus%s.csv' %i
+            ofile='../outputs/person_rep/repPus%s.csv' %i
             i+=1
             logging.info('new job')
             res = pool.apply_async(produce_person_output,[chunk,counts,mydict,ofile])
