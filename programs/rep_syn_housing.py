@@ -1,7 +1,7 @@
 #syn_housing.py
 #William Sexton
 #Daniel Lin
-#Last Modified: 10/02/17 by Daniel
+#Last Modified: 11/20/17 by Daniel
 
 #imports
 import pandas as pd
@@ -26,24 +26,24 @@ def main():
     
     
     """Set file paths"""
-    housing_raw=sys.argv[1] #This should be path to raw ACS housing files
+    housing_raw="../inputs/housing_data/" #This should be path to raw ACS housing files
     filenames_housing=glob.glob(os.path.join(housing_raw,"*.csv")) #list of four housing files
     logging.debug(filenames_housing)
             
-    counts=pd.read_csv("rep_counts.csv",index_col=0) #Dataframe with housing serialno's as index an count column indicating
+    counts=pd.read_csv("../outputs/rep_counts.csv",index_col=0) #Dataframe with housing serialno's as index an count column indicating
     
     idx_base=0
     mydict=[]
     i=0
     for f in filenames_housing:
         for chunk in pd.read_csv(f,dtype=str,chunksize=500000):
-            ofile='housing_rep/repHus%s.csv' %i
+            ofile='../outputs/housing_rep/repHus%s.csv' %i
             i+=1
             idx_base, subdict=produce_housing_output(chunk,counts,idx_base,ofile)
             mydict.append(subdict)
             
     mydict={k:v for d in mydict for k,v in d.items()}
-    pickle.dump(mydict,open("serial_idx_dict.p","wb"))  
+    pickle.dump(mydict,open("../outputs/serial_idx_dict.p","wb"))  
     logging.info('Finished')
     return
     
@@ -51,4 +51,3 @@ def main():
 if __name__ == '__main__':
    main()
     
-   

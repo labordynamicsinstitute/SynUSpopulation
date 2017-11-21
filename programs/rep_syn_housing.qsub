@@ -10,6 +10,6 @@
 source /etc/profile.d/modules.sh
 module load python/anaconda/2.7
 cd $PBS_O_WORKDIR
-python rep_syn_housing.py housing_data
+python rep_syn_housing.py 
 wait
 echo done
