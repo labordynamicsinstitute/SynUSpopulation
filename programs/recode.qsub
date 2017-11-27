@@ -10,6 +10,6 @@
 source /etc/profile.d/modules.sh
 module load python/anaconda/2.7
 cd $PBS_O_WORKDIR
-python recode.py person_rep
+python recode.py ../outputs/person_rep
 wait
 echo done

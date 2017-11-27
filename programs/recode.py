@@ -145,7 +145,7 @@ def main():
         logging.info('processing next filelist')
         df=load_files(filelist)
         logging.info('filelist loaded')
-        ofile='person_recode/rep_recode_ACSpus%s.csv' %i
+        ofile='../outputs/person_recode/rep_recode_ACSpus%s.csv' %i
         i+=1
         cnt=df.groupby('RELP').size()
         gq_pop += cnt.get('16',0)+cnt.get('17',0) #count number of group quarters
