@@ -18,5 +18,3 @@ Assumes file structure of git repo. Code requires the current directory when run
 `python rep_syn_housing.py`
 
 `python rep_syn_person.py`
-
-`python recode.py`
